@@ -1,0 +1,4 @@
+yang harus diinstall
+- streamlit
+- matplotlib
+- -U scikit-learn scipy matplotlib
