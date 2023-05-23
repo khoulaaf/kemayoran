@@ -2,24 +2,37 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import seaborn as sns
-sns.set()
 import matplotlib.pyplot as plt
-import pickle
 
+st.title("Prediksi Cuaca Kemayoran")
 
-from keras.models import Sequential
-from keras.callbacks import EarlyStopping
-from keras.layers import Dense, LSTM, Dropout
+st.subheader("Menampilkan Data Iklim Kemayoran 2018-2022")
+df = pd.read_csv("https://raw.githubusercontent.com/khoulaaf/kemayoran/main/iklim_kemayoran_18_23.csv")
+st.dataframe(df)
+
+df['Tanggal'] = pd.to_datetime(df['Tanggal'])
+df.set_index('Tanggal', inplace= True)
+
+st.subheader("Suhu Rata-Rata")
+fig = plt.figure(figsize = (12, 6))
+plt.plot(df.Tavg, 'b')
+plt.legend()
+st.pyplot(fig)
+
+st.subheader("Prediksi Suhu Rata-Rata Kemayoran")
+
+#Membagi data menjadi data train dan data test
+data_training= pd.DataFrame(df['Tavg'][0:int(len(df)*0.75)])
+data_testing = pd.DataFrame(df['Tavg'][int(len(df)*0.25): int(len(df))])
+
+print("training data: ",data_training.shape)
+print("testing data: ", data_testing.shape)
+
+#Scaling data menggunakan min max scaler (0,1)
 from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler(feature_range=(0,1))
 
-#Menampilkan Judul
-st.title('Prediksi Cuaca Kemayoran')
+data_training_array = scaler.fit_transform(data_training)
 
-#Membaca Dataset
-df = pickle.load(open('iklim_kemayoran_18_22.sav', 'rb'))
-
-st.subheader('Data from 2018-2022')
-#df= df.reset_index()
-st.write(df.tail(10))
-st.write(df.describe())
+#Implementasi model lstm
+model = load_model("keras_model.h5")
