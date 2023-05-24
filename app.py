@@ -114,11 +114,10 @@ plt.legend(['Train', 'Test', 'Predictions'])
 st.pyplot(fig2)
 
 #Prediksi vs Aktual
+preds_acts = pd.DataFrame(data={'Predictions':predictions.flatten(), 'Actuals':y_test.flatten()})
+
 fig3 = plt.figure(figsize = (12, 6))
 plt.plot(preds_acts['Predictions'])
 plt.plot(preds_acts['Actuals'])
 plt.legend(['Predictions', 'Actuals'])
 st.pyplot(fig3)
-
-preds_acts = pd.DataFrame(data={'Prediksi':predictions.flatten()})
-preds_acts
